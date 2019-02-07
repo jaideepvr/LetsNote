@@ -1,0 +1,46 @@
+{% extends "users/base.html" %}
+{% block content %}
+<form class="form-group" action="{% url 'completesharing' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="pk" value="{{ pk }}">
+    Enter email recipients:
+    <div class="" id="recipients-div"></div><br>
+    <button type="button" name="add-recipient-button" onclick="addTextBox(countRecipients());" class="btn btn-outline-secondary">Add Recipient</button> <button type="button" name="remove-recipient-button" onclick="removeTextBox();" class="btn btn-outline-secondary">Remove Recipient</button>
+    <button type="submit" name="button" class="btn btn-outline-success">Share</button><a href="/home/notes/{{ pk }}"> <button type="button" name="button" class="btn btn-outline-danger">Cancel</button></a>
+</form>
+
+<script type="text/javascript">
+    function countRecipients() {
+        console.log(document.getElementsByClassName("email-recipient").length + 1);
+        return document.getElementsByClassName("email-recipient").length;
+    }
+
+    function addTextBox(id_num) {
+        recipient_parent = document.getElementById("recipients-div");
+
+        name = "email-recipient-" + id_num;
+
+        var text_box = document.createElement("input");
+        text_box.setAttribute("type", "email");
+        text_box.setAttribute("name", name);
+        text_box.setAttribute("class", "email-recipient textinput textInput form-control");
+        text_box.setAttribute("placeholder", "Enter an email address.");
+        text_box.setAttribute("required", "");
+
+        recipient_parent.appendChild(text_box);
+        console.log("added child");
+    }
+
+    function removeTextBox() {
+        recipient_parent = document.getElementById("recipients-div");
+        recipient_parent.removeChild(recipient_parent.childNodes[countRecipients() - 1]);
+        console.log("removed child");
+    }
+
+    function removeMessage() {
+        var messages = document.getElementsByClassName("alert");
+        messages.style.display = "none";
+        console.log("done");
+    }
+</script>
+{% endblock content %}
