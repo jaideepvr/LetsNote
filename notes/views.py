@@ -11,6 +11,10 @@ from django.http import HttpResponseForbidden
 from .models import Notes, Note_Tag
 from .forms import NoteForm
 
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializers import NoteSerializer, TagSerializer
 # User defined objects here.
 
 shorten_text = lambda text: text[:27] + '...' if len(text) > 30 else text
@@ -200,3 +204,17 @@ def completeSharing(request):
         messages.success(request, 'Emails sent successfully.')
         return redirect('/home/notes/' + str(pk))
     return redirect('/home/')
+
+
+# API views
+class NoteAPIView(APIView):
+    def get(self, request):
+        notes = Notes.objects.all()
+        note_serializer = NoteSerializer(notes, many=True)
+        return Response(note_serializer.data, status=status.HTTP_200_OK)
+
+class TagAPIView(APIView):
+    def get(self, request):
+        tags = Note_Tag.objects.all()
+        tag_serializer = TagSerializer(tags, many=True)
+        return Response(tag_serializer.data, status=status.HTTP_200_OK)

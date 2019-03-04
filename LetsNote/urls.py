@@ -45,5 +45,9 @@ urlpatterns = [
     path('updatenote/<int:pk>/', notes_views.edit_note, name="update-note"),
     #path('finishupdate/', notes_views.finishUpdateNote, name="finish-update"),
     path('sharenote/<int:pk>/', notes_views.shareNote, name="share-note"),
-    path('completesharing/', notes_views.completeSharing, name="completesharing")
+    path('completesharing/', notes_views.completeSharing, name="completesharing"),
+    path('api/users/', user_views.UserAPIView.as_view()),
+    re_path('^api/users/(?P<name>\w+)/$', user_views.UserAPIView.as_view()),
+    path('api/notes/', notes_views.NoteAPIView.as_view()),
+    path('api/tags/', notes_views.TagAPIView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

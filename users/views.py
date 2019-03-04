@@ -14,6 +14,12 @@ from django.core.mail import EmailMessage
 from django.template.response import TemplateResponse
 from django.http import HttpResponseForbidden
 
+from .serializers import UserSerializer
+
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+
 from .tokens import account_activation_token
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 
@@ -111,3 +117,14 @@ def deleteProfile(request):
     User.objects.filter(username=username).delete()
     messages.success(request, 'Account deleted!')
     return redirect('login')
+
+
+class UserAPIView(APIView):
+    def get(self, request, name=None):
+        if not name:
+            users = User.objects.all()
+        else:
+            users = User.objects.filter(username=name)
+
+        user_serializer = UserSerializer(users, many=True)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
